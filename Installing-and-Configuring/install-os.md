@@ -65,6 +65,55 @@ If you want to set a default option so that you don't have to choose at every
 
 (Credit to [https://www.pavelkogan.com/2015/01/25/linux-mint-encryption/](https://www.pavelkogan.com/2015/01/25/linux-mint-encryption/)
  for this trick).
+ 
+ (\*) Arch Linux Note: During boot after setting up heads with a LUKS encrypted disk, the LUKS unlock prompts may not appear. This is due to the graphics module not being loaded into initramfs. To resolve this, follow these instructions.
+ 
+ First, install the mesa package.
+ ```shell
+ sudo pacman -S mesa
+ ```
+ Next, add the module for your GPU to the `/etc/mkinitcpio.conf` file.
+ 
+ ```shell
+ sudo nano /etc/mkinitcpio.conf
+ ```
+**Intel GPU:**
+
+```shell
+MODULES=(i915)
+```
+
+**AMD GPU:**
+
+```shell
+MODULES=(amdgpu)
+```
+
+**ATI GPU:**
+
+```shell
+MODULES=(radeon)
+```
+
+**nVIDIA GPU (Nouveau):**
+
+```shell
+MODULES=(nouveau)
+```
+
+**nVIDIA GPU (proprietary):**
+
+```shell
+MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+```
+
+Finally, rebuild the initramfs image.
+```shell
+sudo mkinitcpio -P
+```
+As a workaround, if you are using a passphrase, during boot you can type your passphrase in and press enter to unlock the LUKS volume and continue booting.
+
+More information can be found on the Arch Linux Wiki page: (https://wiki.archlinux.org/title/Kernel_mode_setting#Early_KMS_start)
 
 Installing Qubes 4.1
 ===
